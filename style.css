@@ -1,0 +1,110 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #222;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+#message {
+    margin: 10px;
+    min-height: 20px;
+    font-size: 18px;
+}
+
+#buttons {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#buttons button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#buttons button:hover {
+    background-color: #555;
+}
+
+#buttons button:active {
+    transform: scale(0.98);
+}
+
+#buttons label {
+    margin-left: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#buttons input[type="checkbox"] {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+#flagModeLabel {
+    display: none;
+}
+
+@media (pointer: coarse) {
+    #flagModeLabel {
+        display: inline-block;
+    }
+}
+
+#game {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.row {
+    display: flex;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    background-color: #333;
+    border: 1px solid #555;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    color: #fff;
+    font-size: 18px;
+    transition: background-color 0.2s;
+}
+
+.cell:hover {
+    background-color: #3a3a3a;
+}
+
+.cell.open {
+    background-color: #444;
+    cursor: default;
+}
+
+.cell.mine {
+    background-color: #ff4d4d;
+}
+
+.cell.flag {
+    background-color: #333;
+}
+
+.cell.flag::before {
+    content: "🚩";
+}
+
+.cell.mine::before {
+    content: "💣";
+}
