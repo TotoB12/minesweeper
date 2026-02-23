@@ -29,6 +29,7 @@ function init() {
 
     gameOver = false;
     messageDiv.textContent = '';
+    messageDiv.style.color = '';
     if (flagMode) {
         flagMode.checked = false;
     }
@@ -138,10 +139,10 @@ function handleClick(e) {
         if (cell.mine) {
             revealMines();
             e.target.classList.add('mine');
-            displayMessage('Game Over!', 3000);
+            displayMessage('Game Over!', 3000, '#ff4d4d');
             gameOver = true;
         } else {
-            revealCell(x, y);
+            revealCell(x, y, true);
             checkWin();
         }
     }
@@ -169,7 +170,7 @@ function toggleFlag(cell, cellDiv) {
     checkWin();
 }
 
-function revealCell(x, y) {
+function revealCell(x, y, isDirectClick) {
     let cell = gameArray[x][y];
     if (cell.revealed || cell.flagged) return;
 
@@ -178,6 +179,9 @@ function revealCell(x, y) {
         `.cell[data-x='${x}'][data-y='${y}']`
     );
     cellDiv.classList.add('open');
+    if (isDirectClick) {
+        spawnConfetti(cellDiv);
+    }
     if (cell.number > 0) {
         cellDiv.textContent = cell.number;
     } else {
@@ -193,10 +197,28 @@ function revealCell(x, y) {
                     yj < cols &&
                     !(i === 0 && j === 0)
                 ) {
-                    revealCell(xi, yj);
+                    revealCell(xi, yj, false);
                 }
             }
         }
+    }
+}
+
+function spawnConfetti(cellDiv) {
+    const colors = ['#ff4d4d', '#4caf50', '#2196f3', '#ffeb3b', '#ff9800', '#e91e63', '#00bcd4', '#9c27b0'];
+    const count = 8;
+    for (let i = 0; i < count; i++) {
+        const span = document.createElement('span');
+        span.classList.add('confetti');
+        const angle = (i / count) * 2 * Math.PI;
+        const dist = 18 + Math.random() * 14;
+        const tx = Math.round(Math.cos(angle) * dist);
+        const ty = Math.round(Math.sin(angle) * dist);
+        span.style.setProperty('--tx', tx + 'px');
+        span.style.setProperty('--ty', ty + 'px');
+        span.style.backgroundColor = colors[i % colors.length];
+        cellDiv.appendChild(span);
+        span.addEventListener('animationend', () => span.remove());
     }
 }
 
@@ -228,17 +250,19 @@ function checkWin() {
         }
     }
     if (revealedCells === rows * cols - minesCount && flaggedMines === minesCount) {
-        displayMessage('You Win!', 3000);
+        displayMessage('You Win!', 3000, '#4caf50');
         gameOver = true;
     }
 }
 
-function displayMessage(msg, duration) {
+function displayMessage(msg, duration, color) {
     messageDiv.textContent = msg;
+    messageDiv.style.color = color || '';
     if (duration) {
         setTimeout(() => {
             if (!gameOver) {
                 messageDiv.textContent = '';
+                messageDiv.style.color = '';
             }
         }, duration);
     }
@@ -250,7 +274,7 @@ function restartGame() {
 
 function giveUpGame() {
     revealMines();
-    displayMessage('You Gave Up!', 3000);
+    displayMessage('You Gave Up!', 3000, '#ff4d4d');
     gameOver = true;
 }
 
