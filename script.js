@@ -1,6 +1,6 @@
-const rows = 10;
-const cols = 10;
-const minesCount = 15;
+let rows = 8;
+let cols = 8;
+let minesCount = 10;
 let gameArray = [];
 let gameOver = false;
 
@@ -10,11 +10,23 @@ const restartBtn = document.getElementById('restartBtn');
 const giveUpBtn = document.getElementById('giveUpBtn');
 const flagMode = document.getElementById('flagMode');
 const flagModeLabel = document.getElementById('flagModeLabel');
+const sizeSelect = document.getElementById('sizeSelect');
 
 restartBtn.addEventListener('click', restartGame);
 giveUpBtn.addEventListener('click', giveUpGame);
+sizeSelect.addEventListener('change', restartGame);
 
 function init() {
+    const sizes = {
+        easy:   { rows: 8,  cols: 8,  mines: 10 },
+        medium: { rows: 16, cols: 16, mines: 40 },
+        hard:   { rows: 24, cols: 24, mines: 99 }
+    };
+    const size = sizes[sizeSelect.value] || sizes.easy;
+    rows = size.rows;
+    cols = size.cols;
+    minesCount = size.mines;
+
     gameOver = false;
     messageDiv.textContent = '';
     if (flagMode) {
@@ -154,6 +166,7 @@ function toggleFlag(cell, cellDiv) {
     } else {
         cellDiv.classList.remove('flag');
     }
+    checkWin();
 }
 
 function revealCell(x, y) {
@@ -205,13 +218,16 @@ function revealMines() {
 }
 
 function checkWin() {
+    if (gameOver) return;
     let revealedCells = 0;
+    let flaggedMines = 0;
     for (let x = 0; x < rows; x++) {
         for (let y = 0; y < cols; y++) {
             if (gameArray[x][y].revealed) revealedCells++;
+            if (gameArray[x][y].mine && gameArray[x][y].flagged) flaggedMines++;
         }
     }
-    if (revealedCells === rows * cols - minesCount) {
+    if (revealedCells === rows * cols - minesCount && flaggedMines === minesCount) {
         displayMessage('You Win!', 3000);
         gameOver = true;
     }
